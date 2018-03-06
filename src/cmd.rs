@@ -1,6 +1,6 @@
 /// SSD1306 Commands
 
-use ::prelude::*;
+use prelude::*;
 
 /// Commands
 #[derive(Debug)]
@@ -67,7 +67,7 @@ pub enum Command {
     ComPinConfig(bool, bool),
     /// Set up display clock.
     /// First value is oscillator frequency, increasing with higher value
-    /// Second value is divide ratio - 1 
+    /// Second value is divide ratio - 1
     DisplayClockDiv(u8, u8),
     /// Set up phase 1 and 2 of precharge period. each value is from 0-63
     PreChargePeriod(u8, u8),
@@ -79,11 +79,11 @@ pub enum Command {
     ChargePump(bool),
 }
 
-impl Command
-{
+impl Command {
     /// Send command to SSD1306
     pub fn send<I2C>(&self, i2c: &mut I2C, addr: u8) -> Result<(), I2C::Error>
-        where I2C: Ssd1306Write
+    where
+        I2C: Ssd1306Write,
     {
         match self {
             &Command::Contrast(val) => {
@@ -96,7 +96,7 @@ impl Command
             &Command::Invert(inv) => {
                 i2c.write_cmd(addr, 0xA6 | (inv as u8))?;
             }
-            &Command::DisplayOn(on) =>{
+            &Command::DisplayOn(on) => {
                 i2c.write_cmd(addr, 0xAE | (on as u8))?;
             }
             &Command::HScrollSetup(dir, start, end, rate) => {
@@ -210,7 +210,6 @@ pub enum VHScrollDir {
     /// Vertical and left horizontal
     VerticalLeft = 0b10,
 }
-
 
 /// Display page
 #[derive(Debug, Clone, Copy)]

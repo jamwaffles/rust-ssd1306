@@ -13,8 +13,8 @@ pub mod cmd;
 use hal::blocking::i2c::Write;
 use hal::digital::OutputPin;
 use hal::blocking::delay::DelayMs;
-use ::cmd::{Command, AddrMode, VcomhLevel};
-use ::prelude::Ssd1306Write;
+use cmd::{AddrMode, Command, VcomhLevel};
+use prelude::Ssd1306Write;
 
 /// Default i2c address
 pub const ADDRESS: u8 = 0x3C;
@@ -31,13 +31,12 @@ pub struct Ssd1306<I2C, RST> {
 }
 
 impl<I2C, RST> Ssd1306<I2C, RST>
-    where I2C: Write,
-          RST: OutputPin,
+where
+    I2C: Write,
+    RST: OutputPin,
 {
     /// Create Ssd1306 object
-    pub fn new(i2c: I2C, addr: u8, rst: RST, width: u8, height: u8)
-        -> Ssd1306<I2C, RST>
-    {
+    pub fn new(i2c: I2C, addr: u8, rst: RST, width: u8, height: u8) -> Ssd1306<I2C, RST> {
         Ssd1306 {
             addr: addr,
             i2c: i2c,
@@ -55,7 +54,8 @@ impl<I2C, RST> Ssd1306<I2C, RST>
 
     /// Reset display
     pub fn reset<DELAY>(&mut self, mut delay: DELAY) -> DELAY
-        where DELAY: DelayMs<u8>
+    where
+        DELAY: DelayMs<u8>,
     {
         self.rst.set_high();
         delay.delay_ms(1);
@@ -67,7 +67,8 @@ impl<I2C, RST> Ssd1306<I2C, RST>
 
     /// Initialize display
     pub fn init<DELAY>(&mut self, delay: DELAY) -> Result<DELAY, I2C::Error>
-        where DELAY: DelayMs<u8>
+    where
+        DELAY: DelayMs<u8>,
     {
         let delay = self.reset(delay);
         self.setup_display()?;
