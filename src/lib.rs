@@ -38,11 +38,11 @@ where
     /// Create Ssd1306 object
     pub fn new(i2c: I2C, addr: u8, rst: RST, width: u8, height: u8) -> Ssd1306<I2C, RST> {
         Ssd1306 {
-            addr: addr,
-            i2c: i2c,
-            rst: rst,
-            width: width,
-            height: height,
+            addr,
+            i2c,
+            rst,
+            width,
+            height,
             buf: [0; BUF_SIZE],
         }
     }

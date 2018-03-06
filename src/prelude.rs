@@ -28,7 +28,7 @@ where
         let mut buf: [u8; 17] = [0; 17];
         buf[0] = 0x40;
 
-        if data.len() == 0 {
+        if data.is_empty() {
             // error?
             return Ok(());
         }

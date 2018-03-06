@@ -85,21 +85,21 @@ impl Command {
     where
         I2C: Ssd1306Write,
     {
-        match self {
-            &Command::Contrast(val) => {
+        match *self {
+            Command::Contrast(val) => {
                 i2c.write_cmd(addr, 0x81)?;
                 i2c.write_cmd(addr, val)?;
             }
-            &Command::AllOn(on) => {
+            Command::AllOn(on) => {
                 i2c.write_cmd(addr, 0xA4 | (on as u8))?;
             }
-            &Command::Invert(inv) => {
+            Command::Invert(inv) => {
                 i2c.write_cmd(addr, 0xA6 | (inv as u8))?;
             }
-            &Command::DisplayOn(on) => {
+            Command::DisplayOn(on) => {
                 i2c.write_cmd(addr, 0xAE | (on as u8))?;
             }
-            &Command::HScrollSetup(dir, start, end, rate) => {
+            Command::HScrollSetup(dir, start, end, rate) => {
                 i2c.write_cmd(addr, 0x26 | (dir as u8))?;
                 i2c.write_cmd(addr, 0)?;
                 i2c.write_cmd(addr, start as u8)?;
@@ -108,7 +108,7 @@ impl Command {
                 i2c.write_cmd(addr, 0)?;
                 i2c.write_cmd(addr, 0xFF)?;
             }
-            &Command::VHScrollSetup(dir, start, end, rate, offset) => {
+            Command::VHScrollSetup(dir, start, end, rate, offset) => {
                 i2c.write_cmd(addr, 0x28 | (dir as u8))?;
                 i2c.write_cmd(addr, 0)?;
                 i2c.write_cmd(addr, start as u8)?;
@@ -116,74 +116,74 @@ impl Command {
                 i2c.write_cmd(addr, end as u8)?;
                 i2c.write_cmd(addr, offset)?;
             }
-            &Command::EnableScroll(en) => {
+            Command::EnableScroll(en) => {
                 i2c.write_cmd(addr, 0x2E | (en as u8))?;
             }
-            &Command::VScrollArea(above, lines) => {
+            Command::VScrollArea(above, lines) => {
                 i2c.write_cmd(addr, 0xA3)?;
                 i2c.write_cmd(addr, above)?;
                 i2c.write_cmd(addr, lines)?;
             }
-            &Command::LowerColStart(addr) => {
+            Command::LowerColStart(addr) => {
                 i2c.write_cmd(addr, 0xF & addr)?;
             }
-            &Command::UpperColStart(addr) => {
-                i2c.write_cmd(addr, 0xF & addr)?;
+            Command::UpperColStart(addr) => {
+                i2c.write_cmd(addr, 0x1F & addr)?;
             }
-            &Command::AddressMode(mode) => {
+            Command::AddressMode(mode) => {
                 i2c.write_cmd(addr, 0x20)?;
                 i2c.write_cmd(addr, mode as u8)?;
             }
-            &Command::ColumnAddress(start, end) => {
+            Command::ColumnAddress(start, end) => {
                 i2c.write_cmd(addr, 0x21)?;
                 i2c.write_cmd(addr, start)?;
                 i2c.write_cmd(addr, end)?;
             }
-            &Command::PageAddress(start, end) => {
+            Command::PageAddress(start, end) => {
                 i2c.write_cmd(addr, 0x22)?;
                 i2c.write_cmd(addr, start as u8)?;
                 i2c.write_cmd(addr, end as u8)?;
             }
-            &Command::PageStart(page) => {
+            Command::PageStart(page) => {
                 i2c.write_cmd(addr, 0xB0 | (page as u8))?;
             }
-            &Command::StartLine(line) => {
+            Command::StartLine(line) => {
                 i2c.write_cmd(addr, 0x40 | (0x3F & line))?;
             }
-            &Command::SegmentRemap(remap) => {
+            Command::SegmentRemap(remap) => {
                 i2c.write_cmd(addr, 0xA0 | (remap as u8))?;
             }
-            &Command::Multiplex(ratio) => {
+            Command::Multiplex(ratio) => {
                 i2c.write_cmd(addr, 0xA8)?;
                 i2c.write_cmd(addr, ratio)?;
             }
-            &Command::ReverseComDir(rev) => {
+            Command::ReverseComDir(rev) => {
                 i2c.write_cmd(addr, 0xC0 | ((rev as u8) << 3))?;
             }
-            &Command::DisplayOffset(offset) => {
+            Command::DisplayOffset(offset) => {
                 i2c.write_cmd(addr, 0xD3)?;
                 i2c.write_cmd(addr, offset)?;
             }
-            &Command::ComPinConfig(alt, lr) => {
+            Command::ComPinConfig(alt, lr) => {
                 i2c.write_cmd(addr, 0xDA)?;
                 i2c.write_cmd(addr, 0x2 | ((alt as u8) << 4) | ((lr as u8) << 5))?;
             }
-            &Command::DisplayClockDiv(fosc, div) => {
+            Command::DisplayClockDiv(fosc, div) => {
                 i2c.write_cmd(addr, 0xD5)?;
                 i2c.write_cmd(addr, ((0xF & fosc) << 4) | (0xF & div))?;
             }
-            &Command::PreChargePeriod(phase1, phase2) => {
+            Command::PreChargePeriod(phase1, phase2) => {
                 i2c.write_cmd(addr, 0xD9)?;
                 i2c.write_cmd(addr, ((0xF & phase2) << 4) | (0xF & phase1))?;
             }
-            &Command::VcomhDeselect(level) => {
+            Command::VcomhDeselect(level) => {
                 i2c.write_cmd(addr, 0xDB)?;
                 i2c.write_cmd(addr, (level as u8) << 4)?;
             }
-            &Command::Noop => {
+            Command::Noop => {
                 i2c.write_cmd(addr, 0xE3)?;
             }
-            &Command::ChargePump(en) => {
+            Command::ChargePump(en) => {
                 i2c.write_cmd(addr, 0x8D)?;
                 i2c.write_cmd(addr, 0x10 | ((en as u8) << 2))?;
             }
