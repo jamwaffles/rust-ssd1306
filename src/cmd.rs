@@ -234,7 +234,7 @@ pub enum Page {
 
 impl From<u8> for Page {
     fn from(val: u8) -> Page {
-        match val / 128 {
+        match val / 8 {
             0 => Page::Page0,
             1 => Page::Page1,
             2 => Page::Page2,

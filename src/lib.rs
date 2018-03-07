@@ -122,11 +122,12 @@ where
 
     /// Swap pixel value
     pub fn invert_pixel(&mut self, x: u8, y: u8) {
-        let b = &mut self.buf[((y as usize) / 8 * 128) + (x as usize)];
-        if *b | (y % 8) == 0 {
-            *b |= 1 << (y % 8);
+        let byte = &mut self.buf[((y as usize) / 8 * 128) + (x as usize)];
+        let bit = 1 << (y % 8);
+        if *byte & bit == 0 {
+            *byte |= bit;
         } else {
-            *b &= !(1 << (y % 8));
+            *byte &= !bit;
         }
     }
 
