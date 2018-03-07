@@ -7,5 +7,15 @@ keywords = ["embedded-hal-driver", "oled"]
 license = "MIT OR Apache-2.0"
 version = "0.1.0"
 
+[profile.dev]
+codegen-units = 1
+incremental = false
+
 [dependencies]
 embedded-hal = "0.1.2"
+
+[dev-dependencies]
+cortex-m = "0.4.3"
+f3 = { version = "0.5.3", features = ["rt"] }
+cortex-m-rt = { version = "0.3.13", features = ["abort-on-panic"] }
+cortex-m-semihosting = "0.2.0"

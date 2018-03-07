@@ -83,7 +83,7 @@ impl Command {
     /// Send command to SSD1306
     pub fn send<I2C>(&self, i2c: &mut I2C, addr: u8) -> Result<(), I2C::Error>
     where
-        I2C: Ssd1306Write,
+        I2C: Write,
     {
         match *self {
             Command::Contrast(val) => {

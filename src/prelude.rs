@@ -1,9 +1,9 @@
-//! SSD1306 Prelude
+//! Traits for
 
-use hal::blocking::i2c::Write;
+use hal::blocking::i2c;
 
 /// Trait for writing data to SSD1306
-pub trait Ssd1306Write {
+pub trait Write {
     /// Error type
     type Error;
 
@@ -13,9 +13,9 @@ pub trait Ssd1306Write {
     fn write_data(&mut self, addr: u8, data: &[u8]) -> Result<(), Self::Error>;
 }
 
-impl<I2C> Ssd1306Write for I2C
+impl<I2C> Write for I2C
 where
-    I2C: Write,
+    I2C: i2c::Write,
 {
     type Error = I2C::Error;
 
