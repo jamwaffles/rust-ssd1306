@@ -1,7 +1,11 @@
 [package]
 name = "ssd1306"
-version = "0.1.0"
+description = "A platform agnostic driver for SSD1306 oled display driver"
 authors = ["Nathan Scowcroft <nate.scowcroft@edgewaterautomation.com>"]
+categories = ["embedded", "hardware-support", "no-std"]
+keywords = ["embedded-hal-driver", "oled"]
+license = "MIT OR Apache-2.0"
+version = "0.1.0"
 
 [dependencies]
 embedded-hal = "0.1.2"
