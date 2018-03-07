@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ssd1306` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ssd1306">
+
+    <title>ssd1306 - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle">
+    
+    <link rel="stylesheet" type="text/css" href="../dark.css">
+    <link rel="stylesheet" type="text/css" href="../main.css" id="themeStyle">
+    <script src="../storage.js"></script>
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
+        
+        <p class='location'>Crate ssd1306</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#constants">Constants</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'ssd1306', ty: 'mod', relpath: '../'};</script></div>
+    </nav>
+
+    <div class="theme-picker">
+        <button id="theme-picker" aria-label="Pick another theme!">
+            <img src="../brush.svg" width="18" alt="Pick another theme!">
+        </button>
+        <div id="theme-choices"></div>
+    </div>
+    <script src="../theme.js"></script>
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>ssd1306</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/ssd1306/lib.rs.html#1-207' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Device-agnostic driver for SSD1306</p>
+<p>This driver was built using <a href="https://doc.rs/embedded-hal/%7E0.1"><code>embedded_hal</code></a> traits.</p>
+<h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
+<pre class="rust rust-example-rendered">
+<span class="attribute">#![<span class="ident">no_std</span>]</span>
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">unsafe_code</span>)]</span>
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
+
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">f3</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">cortex_m</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">cortex_m_rt</span>; <span class="comment">// for abort-on-panic</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">embedded_hal</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">ssd1306</span>;
+
+<span class="kw">use</span> <span class="ident">f3</span>::<span class="ident">hal</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">f3</span>::<span class="ident">hal</span>::<span class="ident">delay</span>::<span class="ident">Delay</span>;
+<span class="kw">use</span> <span class="ident">f3</span>::<span class="ident">hal</span>::<span class="ident">i2c</span>::<span class="ident">I2c</span>;
+<span class="kw">use</span> <span class="ident">f3</span>::<span class="ident">hal</span>::<span class="ident">stm32f30x</span>;
+<span class="kw">use</span> <span class="ident">ssd1306</span>::{<span class="ident">Ssd1306</span>, <span class="ident">ADDRESS</span>};
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="kw">let</span> <span class="ident">cp</span> <span class="op">=</span> <span class="ident">cortex_m</span>::<span class="ident">Peripherals</span>::<span class="ident">take</span>().<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">dp</span> <span class="op">=</span> <span class="ident">stm32f30x</span>::<span class="ident">Peripherals</span>::<span class="ident">take</span>().<span class="ident">unwrap</span>();
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">flash</span> <span class="op">=</span> <span class="ident">dp</span>.<span class="ident">FLASH</span>.<span class="ident">constrain</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rcc</span> <span class="op">=</span> <span class="ident">dp</span>.<span class="ident">RCC</span>.<span class="ident">constrain</span>();
+    <span class="kw">let</span> <span class="ident">clocks</span> <span class="op">=</span> <span class="ident">rcc</span>.<span class="ident">cfgr</span>.<span class="ident">freeze</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">flash</span>.<span class="ident">acr</span>);
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">gpiob</span> <span class="op">=</span> <span class="ident">dp</span>.<span class="ident">GPIOB</span>.<span class="ident">split</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rcc</span>.<span class="ident">ahb</span>);
+    <span class="kw">let</span> <span class="ident">scl</span> <span class="op">=</span> <span class="ident">gpiob</span>.<span class="ident">pb6</span>.<span class="ident">into_af4</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gpiob</span>.<span class="ident">moder</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gpiob</span>.<span class="ident">afrl</span>);
+    <span class="kw">let</span> <span class="ident">sda</span> <span class="op">=</span> <span class="ident">gpiob</span>.<span class="ident">pb7</span>.<span class="ident">into_af4</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gpiob</span>.<span class="ident">moder</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gpiob</span>.<span class="ident">afrl</span>);
+    <span class="kw">let</span> <span class="ident">i2c1</span> <span class="op">=</span> <span class="ident">I2c</span>::<span class="ident">i2c1</span>(<span class="ident">dp</span>.<span class="ident">I2C1</span>, (<span class="ident">scl</span>, <span class="ident">sda</span>), <span class="number">100</span>.<span class="ident">khz</span>(), <span class="ident">clocks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rcc</span>.<span class="ident">apb1</span>);
+    <span class="kw">let</span> <span class="ident">rst</span> <span class="op">=</span> <span class="ident">gpiob</span>.<span class="ident">pb9</span>.<span class="ident">into_push_pull_output</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gpiob</span>.<span class="ident">moder</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gpiob</span>.<span class="ident">otyper</span>);
+
+    <span class="kw">let</span> <span class="ident">delay</span> <span class="op">=</span> <span class="ident">Delay</span>::<span class="ident">new</span>(<span class="ident">cp</span>.<span class="ident">SYST</span>, <span class="ident">clocks</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ssd1306</span> <span class="op">=</span> <span class="ident">Ssd1306</span>::<span class="ident">new</span>(<span class="ident">i2c1</span>, <span class="ident">ADDRESS</span>, <span class="ident">rst</span>, <span class="number">128</span>, <span class="number">32</span>);
+
+    <span class="ident">ssd1306</span>.<span class="ident">init</span>(<span class="ident">delay</span>).<span class="ident">unwrap</span>();
+    <span class="ident">ssd1306</span>.<span class="ident">clear</span>();
+    <span class="ident">ssd1306</span>.<span class="ident">draw</span>().<span class="ident">unwrap</span>();
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">y</span> <span class="op">=</span> <span class="number">5</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xadd</span>: <span class="ident">i16</span> <span class="op">=</span> <span class="number">1</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">yadd</span>: <span class="ident">i16</span> <span class="op">=</span> <span class="number">1</span>;
+
+    <span class="kw">loop</span> {
+        <span class="kw">if</span> <span class="ident">x</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">x</span> <span class="op">==</span> <span class="number">127</span> {
+            <span class="ident">xadd</span> <span class="op">*=</span> <span class="op">-</span><span class="number">1</span>;
+        }
+        <span class="kw">if</span> <span class="ident">y</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">y</span> <span class="op">==</span> <span class="number">31</span> {
+            <span class="ident">yadd</span> <span class="op">*=</span> <span class="op">-</span><span class="number">1</span>;
+        }
+        <span class="ident">x</span> <span class="op">+=</span> <span class="ident">xadd</span>;
+        <span class="ident">y</span> <span class="op">+=</span> <span class="ident">yadd</span>;
+        <span class="ident">ssd1306</span>.<span class="ident">invert_pixel</span>(<span class="ident">x</span> <span class="kw">as</span> <span class="ident">u8</span>, <span class="ident">y</span> <span class="kw">as</span> <span class="ident">u8</span>);
+        <span class="ident">ssd1306</span>.<span class="ident">draw</span>().<span class="ident">unwrap</span>();
+    }
+}</pre>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="cmd/index.html"
+                                  title='mod ssd1306::cmd'>cmd</a></td>
+                           <td class='docblock-short'>
+                                <p>Commands</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="prelude/index.html"
+                                  title='mod ssd1306::prelude'>prelude</a></td>
+                           <td class='docblock-short'>
+                                <p>SSD1306 Prelude
+Traits for</p>
+
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Ssd1306.html"
+                                  title='struct ssd1306::Ssd1306'>Ssd1306</a></td>
+                           <td class='docblock-short'>
+                                <p>Ssd1306</p>
+
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.ADDRESS.html"
+                                  title='constant ssd1306::ADDRESS'>ADDRESS</a></td>
+                           <td class='docblock-short'>
+                                <p>Default i2c address</p>
+
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt><kbd>?</kbd></dt>
+                    <dd>Show this help dialog</dd>
+                    <dt><kbd>S</kbd></dt>
+                    <dd>Focus the search field</dd>
+                    <dt><kbd>↑</kbd></dt>
+                    <dd>Move up in search results</dd>
+                    <dt><kbd>↓</kbd></dt>
+                    <dd>Move down in search results</dd>
+                    <dt><kbd>↹</kbd></dt>
+                    <dd>Switch tab</dd>
+                    <dt><kbd>&#9166;</kbd></dt>
+                    <dd>Go to active search result</dd>
+                    <dt><kbd>+</kbd></dt>
+                    <dd>Expand all sections</dd>
+                    <dt><kbd>-</kbd></dt>
+                    <dd>Collapse all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "ssd1306";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

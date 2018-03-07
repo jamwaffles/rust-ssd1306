@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["AddrMode","Address mode"],["Command","Commands"],["HScrollDir","Horizontal Scroll Direction"],["NFrames","Frame interval"],["Page","Display page"],["VHScrollDir","Vertical and horizontal scroll dir"],["VcomhLevel","Vcomh Deselect level"]]});
