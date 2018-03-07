@@ -2,6 +2,8 @@
 
 A platform-agnostic driver for the SSD1306 oled display driver.
 
+## [Documentation](https://edgewaterdevelopment.github.io/rust-ssd1306/ssd1306/)
+
 ## License
 
 Licensed under either of
@@ -10,7 +12,7 @@ Licensed under either of
   http://www.apache.org/licenses/LICENSE-2.0)
 - MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
-at your option
+at your option.
 
 ## Contribution
 
