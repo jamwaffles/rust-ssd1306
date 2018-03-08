@@ -251,16 +251,6 @@
 <span id="195">195</span>
 <span id="196">196</span>
 <span id="197">197</span>
-<span id="198">198</span>
-<span id="199">199</span>
-<span id="200">200</span>
-<span id="201">201</span>
-<span id="202">202</span>
-<span id="203">203</span>
-<span id="204">204</span>
-<span id="205">205</span>
-<span id="206">206</span>
-<span id="207">207</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Device-agnostic driver for SSD1306</span>
 <span class="doccomment">//!</span>
@@ -349,26 +339,23 @@
 <span class="kw">const</span> <span class="ident">BUF_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">128</span> <span class="op">*</span> <span class="number">32</span> <span class="op">/</span> <span class="number">8</span>;
 
 <span class="doccomment">/// Ssd1306</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Ssd1306</span><span class="op">&lt;</span><span class="ident">I2C</span>, <span class="ident">RST</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Ssd1306</span><span class="op">&lt;</span><span class="ident">I2C</span><span class="op">&gt;</span> {
     <span class="ident">addr</span>: <span class="ident">u8</span>,
     <span class="ident">width</span>: <span class="ident">u8</span>,
     <span class="ident">height</span>: <span class="ident">u8</span>,
     <span class="ident">i2c</span>: <span class="ident">I2C</span>,
-    <span class="ident">rst</span>: <span class="ident">RST</span>,
     <span class="ident">buf</span>: [<span class="ident">u8</span>; <span class="ident">BUF_SIZE</span>],
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I2C</span>, <span class="ident">RST</span><span class="op">&gt;</span> <span class="ident">Ssd1306</span><span class="op">&lt;</span><span class="ident">I2C</span>, <span class="ident">RST</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I2C</span><span class="op">&gt;</span> <span class="ident">Ssd1306</span><span class="op">&lt;</span><span class="ident">I2C</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">I2C</span>: <span class="ident">i2c</span>::<span class="ident">Write</span>,
-    <span class="ident">RST</span>: <span class="ident">OutputPin</span>,
 {
     <span class="doccomment">/// Create Ssd1306 object</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">i2c</span>: <span class="ident">I2C</span>, <span class="ident">addr</span>: <span class="ident">u8</span>, <span class="ident">rst</span>: <span class="ident">RST</span>, <span class="ident">width</span>: <span class="ident">u8</span>, <span class="ident">height</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">Ssd1306</span><span class="op">&lt;</span><span class="ident">I2C</span>, <span class="ident">RST</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">i2c</span>: <span class="ident">I2C</span>, <span class="ident">addr</span>: <span class="ident">u8</span>, <span class="ident">width</span>: <span class="ident">u8</span>, <span class="ident">height</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">Ssd1306</span><span class="op">&lt;</span><span class="ident">I2C</span><span class="op">&gt;</span> {
         <span class="ident">Ssd1306</span> {
             <span class="ident">addr</span>,
             <span class="ident">i2c</span>,
-            <span class="ident">rst</span>,
             <span class="ident">width</span>,
             <span class="ident">height</span>,
             <span class="ident">buf</span>: [<span class="number">0</span>; <span class="ident">BUF_SIZE</span>],
@@ -376,34 +363,27 @@
     }
 
     <span class="doccomment">/// Release resources</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">free</span>(<span class="self">self</span>) <span class="op">-&gt;</span> (<span class="ident">I2C</span>, <span class="ident">RST</span>) {
-        (<span class="self">self</span>.<span class="ident">i2c</span>, <span class="self">self</span>.<span class="ident">rst</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">free</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">I2C</span> {
+        <span class="self">self</span>.<span class="ident">i2c</span>
     }
 
     <span class="doccomment">/// Reset display</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reset</span><span class="op">&lt;</span><span class="ident">DELAY</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">delay</span>: <span class="ident">DELAY</span>) <span class="op">-&gt;</span> <span class="ident">DELAY</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reset</span><span class="op">&lt;</span><span class="ident">RST</span>, <span class="ident">DELAY</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">rst</span>: <span class="ident">RST</span>, <span class="kw-2">mut</span> <span class="ident">delay</span>: <span class="ident">DELAY</span>) <span class="op">-&gt;</span> (<span class="ident">RST</span>, <span class="ident">DELAY</span>)
     <span class="kw">where</span>
+        <span class="ident">RST</span>: <span class="ident">OutputPin</span>,
         <span class="ident">DELAY</span>: <span class="ident">DelayMs</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
     {
-        <span class="self">self</span>.<span class="ident">rst</span>.<span class="ident">set_high</span>();
+        <span class="ident">rst</span>.<span class="ident">set_high</span>();
         <span class="ident">delay</span>.<span class="ident">delay_ms</span>(<span class="number">1</span>);
-        <span class="self">self</span>.<span class="ident">rst</span>.<span class="ident">set_low</span>();
+        <span class="ident">rst</span>.<span class="ident">set_low</span>();
         <span class="ident">delay</span>.<span class="ident">delay_ms</span>(<span class="number">10</span>);
-        <span class="self">self</span>.<span class="ident">rst</span>.<span class="ident">set_high</span>();
-        <span class="ident">delay</span>
+        <span class="ident">rst</span>.<span class="ident">set_high</span>();
+        (<span class="ident">rst</span>, <span class="ident">delay</span>)
     }
 
     <span class="doccomment">/// Initialize display</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">init</span><span class="op">&lt;</span><span class="ident">DELAY</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">delay</span>: <span class="ident">DELAY</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">DELAY</span>, <span class="ident">I2C</span>::<span class="ident">Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">DELAY</span>: <span class="ident">DelayMs</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">init</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">I2C</span>::<span class="ident">Error</span><span class="op">&gt;</span>
     {
-        <span class="kw">let</span> <span class="ident">delay</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">reset</span>(<span class="ident">delay</span>);
-        <span class="self">self</span>.<span class="ident">setup_display</span>()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">delay</span>)
-    }
-
-    <span class="kw">fn</span> <span class="ident">setup_display</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">I2C</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">send_command</span>(<span class="ident">Command</span>::<span class="ident">DisplayOn</span>(<span class="bool-val">false</span>))<span class="question-mark">?</span>;
         <span class="self">self</span>.<span class="ident">send_command</span>(<span class="ident">Command</span>::<span class="ident">DisplayClockDiv</span>(<span class="number">0x8</span>, <span class="number">0x0</span>))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">mpx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">height</span> <span class="op">-</span> <span class="number">1</span>;
