@@ -251,6 +251,7 @@
 <span id="195">195</span>
 <span id="196">196</span>
 <span id="197">197</span>
+<span id="198">198</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Device-agnostic driver for SSD1306</span>
 <span class="doccomment">//!</span>
@@ -292,9 +293,10 @@
 <span class="doccomment">//!     let rst = gpiob.pb9.into_push_pull_output(&amp;mut gpiob.moder, &amp;mut gpiob.otyper);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     let delay = Delay::new(cp.SYST, clocks);</span>
-<span class="doccomment">//!     let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, rst, 128, 32);</span>
+<span class="doccomment">//!     let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, 128, 32);</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//!     ssd1306.init(delay).unwrap();</span>
+<span class="doccomment">//!     ssd1306.reset(rst, delay);</span>
+<span class="doccomment">//!     ssd1306.init().unwrap();</span>
 <span class="doccomment">//!     ssd1306.clear();</span>
 <span class="doccomment">//!     ssd1306.draw().unwrap();</span>
 <span class="doccomment">//!</span>

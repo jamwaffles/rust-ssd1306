@@ -59,7 +59,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/ssd1306/lib.rs.html#1-197' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/ssd1306/lib.rs.html#1-198' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Device-agnostic driver for SSD1306</p>
 <p>This driver was built using <a href="https://doc.rs/embedded-hal/%7E0.1"><code>embedded_hal</code></a> traits.</p>
 <h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
@@ -95,9 +95,10 @@
     <span class="kw">let</span> <span class="ident">rst</span> <span class="op">=</span> <span class="ident">gpiob</span>.<span class="ident">pb9</span>.<span class="ident">into_push_pull_output</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gpiob</span>.<span class="ident">moder</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">gpiob</span>.<span class="ident">otyper</span>);
 
     <span class="kw">let</span> <span class="ident">delay</span> <span class="op">=</span> <span class="ident">Delay</span>::<span class="ident">new</span>(<span class="ident">cp</span>.<span class="ident">SYST</span>, <span class="ident">clocks</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ssd1306</span> <span class="op">=</span> <span class="ident">Ssd1306</span>::<span class="ident">new</span>(<span class="ident">i2c1</span>, <span class="ident">ADDRESS</span>, <span class="ident">rst</span>, <span class="number">128</span>, <span class="number">32</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ssd1306</span> <span class="op">=</span> <span class="ident">Ssd1306</span>::<span class="ident">new</span>(<span class="ident">i2c1</span>, <span class="ident">ADDRESS</span>, <span class="number">128</span>, <span class="number">32</span>);
 
-    <span class="ident">ssd1306</span>.<span class="ident">init</span>(<span class="ident">delay</span>).<span class="ident">unwrap</span>();
+    <span class="ident">ssd1306</span>.<span class="ident">reset</span>(<span class="ident">rst</span>, <span class="ident">delay</span>);
+    <span class="ident">ssd1306</span>.<span class="ident">init</span>().<span class="ident">unwrap</span>();
     <span class="ident">ssd1306</span>.<span class="ident">clear</span>();
     <span class="ident">ssd1306</span>.<span class="ident">draw</span>().<span class="ident">unwrap</span>();
 
