@@ -38,9 +38,10 @@
 //!     let rst = gpiob.pb9.into_push_pull_output(&mut gpiob.moder, &mut gpiob.otyper);
 //!
 //!     let delay = Delay::new(cp.SYST, clocks);
-//!     let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, rst, 128, 32);
+//!     let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, 128, 32);
 //!
-//!     ssd1306.init(delay).unwrap();
+//!     ssd1306.reset(rst, delay);
+//!     ssd1306.init().unwrap();
 //!     ssd1306.clear();
 //!     ssd1306.draw().unwrap();
 //!
