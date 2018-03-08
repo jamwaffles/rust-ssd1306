@@ -85,26 +85,23 @@ pub const ADDRESS: u8 = 0x3C;
 const BUF_SIZE: usize = 128 * 32 / 8;
 
 /// Ssd1306
-pub struct Ssd1306<I2C, RST> {
+pub struct Ssd1306<I2C> {
     addr: u8,
     width: u8,
     height: u8,
     i2c: I2C,
-    rst: RST,
     buf: [u8; BUF_SIZE],
 }
 
-impl<I2C, RST> Ssd1306<I2C, RST>
+impl<I2C> Ssd1306<I2C>
 where
     I2C: i2c::Write,
-    RST: OutputPin,
 {
     /// Create Ssd1306 object
-    pub fn new(i2c: I2C, addr: u8, rst: RST, width: u8, height: u8) -> Ssd1306<I2C, RST> {
+    pub fn new(i2c: I2C, addr: u8, width: u8, height: u8) -> Ssd1306<I2C> {
         Ssd1306 {
             addr,
             i2c,
-            rst,
             width,
             height,
             buf: [0; BUF_SIZE],
@@ -112,34 +109,27 @@ where
     }
 
     /// Release resources
-    pub fn free(self) -> (I2C, RST) {
-        (self.i2c, self.rst)
+    pub fn free(self) -> I2C {
+        self.i2c
     }
 
     /// Reset display
-    pub fn reset<DELAY>(&mut self, mut delay: DELAY) -> DELAY
+    pub fn reset<RST, DELAY>(&mut self, mut rst: RST, mut delay: DELAY) -> (RST, DELAY)
     where
+        RST: OutputPin,
         DELAY: DelayMs<u8>,
     {
-        self.rst.set_high();
+        rst.set_high();
         delay.delay_ms(1);
-        self.rst.set_low();
+        rst.set_low();
         delay.delay_ms(10);
-        self.rst.set_high();
-        delay
+        rst.set_high();
+        (rst, delay)
     }
 
     /// Initialize display
-    pub fn init<DELAY>(&mut self, delay: DELAY) -> Result<DELAY, I2C::Error>
-    where
-        DELAY: DelayMs<u8>,
+    pub fn init(&mut self) -> Result<(), I2C::Error>
     {
-        let delay = self.reset(delay);
-        self.setup_display()?;
-        Ok(delay)
-    }
-
-    fn setup_display(&mut self) -> Result<(), I2C::Error> {
         self.send_command(Command::DisplayOn(false))?;
         self.send_command(Command::DisplayClockDiv(0x8, 0x0))?;
         let mpx = self.height - 1;
