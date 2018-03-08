@@ -34,7 +34,9 @@ where
         }
 
         for chunk in data.chunks(16) {
-            buf[1..].copy_from_slice(chunk);
+            for (i, byte) in chunk.iter().enumerate() {
+                buf[i + 1] = *byte;
+            }
             self.write(addr, &buf[..1 + chunk.len()])?;
         }
 

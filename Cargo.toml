@@ -11,6 +11,10 @@ version = "0.1.0"
 codegen-units = 1
 incremental = false
 
+[profile.release]
+lto = true
+debug = true
+
 [dependencies]
 embedded-hal = "0.1.2"
 

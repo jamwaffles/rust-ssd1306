@@ -128,8 +128,7 @@ where
     }
 
     /// Initialize display
-    pub fn init(&mut self) -> Result<(), I2C::Error>
-    {
+    pub fn init(&mut self) -> Result<(), I2C::Error> {
         self.send_command(Command::DisplayOn(false))?;
         self.send_command(Command::DisplayClockDiv(0x8, 0x0))?;
         let mpx = self.height - 1;
