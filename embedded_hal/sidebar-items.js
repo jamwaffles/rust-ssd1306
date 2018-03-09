@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["blocking","Blocking API"],["digital","Digital I/O"],["prelude","The prelude is a collection of all the traits in this crate"],["serial","Serial interface"],["spi","Serial Peripheral Interface"],["timer","Timers"]],"trait":[["PwmPin","A single PWM channel / pin"]]});

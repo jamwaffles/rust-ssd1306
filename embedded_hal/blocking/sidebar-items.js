@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["delay","Delays"],["i2c","Blocking I2C API"],["serial","Blocking serial API"],["spi","Blocking SPI API"]]});
