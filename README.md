@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/EdgewaterDevelopment/rust-ssd1306.svg?branch=master)](https://travis-ci.org/EdgewaterDevelopment/rust-ssd1306)
+
 # ssd1306
 
 A platform-agnostic driver for the SSD1306 oled display driver.
