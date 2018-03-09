@@ -251,7 +251,6 @@
 <span id="195">195</span>
 <span id="196">196</span>
 <span id="197">197</span>
-<span id="198">198</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Device-agnostic driver for SSD1306</span>
 <span class="doccomment">//!</span>
@@ -290,12 +289,12 @@
 <span class="doccomment">//!     let scl = gpiob.pb6.into_af4(&amp;mut gpiob.moder, &amp;mut gpiob.afrl);</span>
 <span class="doccomment">//!     let sda = gpiob.pb7.into_af4(&amp;mut gpiob.moder, &amp;mut gpiob.afrl);</span>
 <span class="doccomment">//!     let i2c1 = I2c::i2c1(dp.I2C1, (scl, sda), 100.khz(), clocks, &amp;mut rcc.apb1);</span>
-<span class="doccomment">//!     let rst = gpiob.pb9.into_push_pull_output(&amp;mut gpiob.moder, &amp;mut gpiob.otyper);</span>
+<span class="doccomment">//!     let mut rst = gpiob.pb9.into_push_pull_output(&amp;mut gpiob.moder, &amp;mut gpiob.otyper);</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//!     let delay = Delay::new(cp.SYST, clocks);</span>
+<span class="doccomment">//!     let mut delay = Delay::new(cp.SYST, clocks);</span>
 <span class="doccomment">//!     let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, 128, 32);</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//!     ssd1306.reset(rst, delay);</span>
+<span class="doccomment">//!     ssd1306.reset(&amp;mut rst, &amp;mut delay);</span>
 <span class="doccomment">//!     ssd1306.init().unwrap();</span>
 <span class="doccomment">//!     ssd1306.clear();</span>
 <span class="doccomment">//!     ssd1306.draw().unwrap();</span>
@@ -370,7 +369,7 @@
     }
 
     <span class="doccomment">/// Reset display</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reset</span><span class="op">&lt;</span><span class="ident">RST</span>, <span class="ident">DELAY</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">rst</span>: <span class="ident">RST</span>, <span class="kw-2">mut</span> <span class="ident">delay</span>: <span class="ident">DELAY</span>) <span class="op">-&gt;</span> (<span class="ident">RST</span>, <span class="ident">DELAY</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">reset</span><span class="op">&lt;</span><span class="ident">RST</span>, <span class="ident">DELAY</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rst</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">RST</span>, <span class="ident">delay</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DELAY</span>)
     <span class="kw">where</span>
         <span class="ident">RST</span>: <span class="ident">OutputPin</span>,
         <span class="ident">DELAY</span>: <span class="ident">DelayMs</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
@@ -380,7 +379,6 @@
         <span class="ident">rst</span>.<span class="ident">set_low</span>();
         <span class="ident">delay</span>.<span class="ident">delay_ms</span>(<span class="number">10</span>);
         <span class="ident">rst</span>.<span class="ident">set_high</span>();
-        (<span class="ident">rst</span>, <span class="ident">delay</span>)
     }
 
     <span class="doccomment">/// Initialize display</span>
