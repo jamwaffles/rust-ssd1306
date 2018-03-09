@@ -1,7 +1,10 @@
 language: rust
 sudo: false
 
-cache: cargo
+cache:
+  cargo: true
+  directories:
+     - $HOME/.xargo
 
 addons:
   apt:
@@ -11,6 +14,7 @@ addons:
       - libdw-dev
       - binutils-dev
       - cmake
+      - binutils-arm-none-eabi
     sources:
       - kalakris-cmake
 
@@ -19,15 +23,17 @@ rust:
 
 before_script:
   - export PATH=$HOME/.cargo/bin:$PATH
+  - rustup component add rust-src
   - cargo install cargo-update || echo "cargo-update already installed"
   - cargo install cargo-travis || echo "cargo-travis already installed"
   - cargo install clippy || echo "clippy already installed"
+  - cargo install xargo || echo "xargo already installed"
   - cargo install-update -a
 
 script:
   - |
-      cargo clippy &&
-      cargo doc
+      xargo clippy --target thumbv7em-none-eabihf &&
+      xargo doc
 
 after_success:
   - cargo doc-upload
