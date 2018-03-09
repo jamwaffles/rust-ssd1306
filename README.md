@@ -4,7 +4,7 @@
 
 A platform-agnostic driver for the SSD1306 oled display driver.
 
-## [Documentation](https://edgewaterdevelopment.github.io/rust-ssd1306/ssd1306/)
+## [Documentation](https://edgewaterdevelopment.github.io/rust-ssd1306/master/ssd1306/)
 
 ## License
 
