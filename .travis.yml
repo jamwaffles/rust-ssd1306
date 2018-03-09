@@ -22,12 +22,11 @@ before_script:
   - cargo install cargo-update || echo "cargo-update already installed"
   - cargo install cargo-travis || echo "cargo-travis already installed"
   - cargo install clippy || echo "clippy already installed"
-  - export CLIPPY=true
   - cargo install-update -a
 
 script:
   - |
-      cargo build &&
+      cargo clippy &&
       cargo doc
 
 after_success:
