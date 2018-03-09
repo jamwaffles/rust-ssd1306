@@ -35,12 +35,12 @@
 //!     let scl = gpiob.pb6.into_af4(&mut gpiob.moder, &mut gpiob.afrl);
 //!     let sda = gpiob.pb7.into_af4(&mut gpiob.moder, &mut gpiob.afrl);
 //!     let i2c1 = I2c::i2c1(dp.I2C1, (scl, sda), 100.khz(), clocks, &mut rcc.apb1);
-//!     let rst = gpiob.pb9.into_push_pull_output(&mut gpiob.moder, &mut gpiob.otyper);
+//!     let mut rst = gpiob.pb9.into_push_pull_output(&mut gpiob.moder, &mut gpiob.otyper);
 //!
-//!     let delay = Delay::new(cp.SYST, clocks);
+//!     let mut delay = Delay::new(cp.SYST, clocks);
 //!     let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, 128, 32);
 //!
-//!     ssd1306.reset(rst, delay);
+//!     ssd1306.reset(&mut rst, &mut delay);
 //!     ssd1306.init().unwrap();
 //!     ssd1306.clear();
 //!     ssd1306.draw().unwrap();
@@ -115,7 +115,7 @@ where
     }
 
     /// Reset display
-    pub fn reset<RST, DELAY>(&mut self, mut rst: RST, mut delay: DELAY) -> (RST, DELAY)
+    pub fn reset<RST, DELAY>(&mut self, rst: &mut RST, delay: &mut DELAY)
     where
         RST: OutputPin,
         DELAY: DelayMs<u8>,
@@ -125,7 +125,6 @@ where
         rst.set_low();
         delay.delay_ms(10);
         rst.set_high();
-        (rst, delay)
     }
 
     /// Initialize display
