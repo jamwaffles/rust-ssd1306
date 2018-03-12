@@ -38,7 +38,7 @@
 //!     let mut rst = gpiob.pb9.into_push_pull_output(&mut gpiob.moder, &mut gpiob.otyper);
 //!
 //!     let mut delay = Delay::new(cp.SYST, clocks);
-//!     let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, 128, 32);
+//!     let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, Resolution::R128x32, true);
 //!
 //!     ssd1306.reset(&mut rst, &mut delay);
 //!     ssd1306.init().unwrap();
@@ -91,6 +91,7 @@ pub struct Ssd1306<I2C> {
     width: u8,
     height: u8,
     i2c: I2C,
+    charge_pump: bool,
     buf: [u8; BUF_SIZE],
 }
 
@@ -99,12 +100,22 @@ where
     I2C: i2c::Write,
 {
     /// Create Ssd1306 object
-    pub fn new(i2c: I2C, addr: u8, width: u8, height: u8) -> Ssd1306<I2C> {
+    pub fn new(i2c: I2C, addr: u8, res: Resolution, charge_pump: bool) -> Ssd1306<I2C> {
+        let width: u8;
+        let height: u8;
+
+        match res {
+            Resolution::R128x32 => { width = 128; height = 32; }
+            Resolution::R128x64 => { width = 128; height = 64; }
+            Resolution::R96x16 => { width = 96; height = 16; }
+        }
+
         Ssd1306 {
             addr,
             i2c,
             width,
             height,
+            charge_pump,
             buf: [0; BUF_SIZE],
         }
     }
@@ -135,11 +146,18 @@ where
         self.send_command(Command::Multiplex(mpx))?;
         self.send_command(Command::DisplayOffset(0))?;
         self.send_command(Command::StartLine(0))?;
-        self.send_command(Command::ChargePump(true))?;
+        let charge_pump = self.charge_pump;
+        self.send_command(Command::ChargePump(charge_pump))?;
         self.send_command(Command::AddressMode(AddrMode::Horizontal))?;
         self.send_command(Command::SegmentRemap(true))?;
         self.send_command(Command::ReverseComDir(true))?;
-        self.send_command(Command::ComPinConfig(false, false))?;
+        if self.width == 128 && self.height == 32 {
+            self.send_command(Command::ComPinConfig(false, false))?;
+        } else if self.width == 128 && self.height == 64 {
+            self.send_command(Command::ComPinConfig(true, false))?;
+        } else if self.width == 96 && self.height == 16 {
+            self.send_command(Command::ComPinConfig(false, false))?;
+        }
         self.send_command(Command::Contrast(0x8F))?;
         self.send_command(Command::PreChargePeriod(0x1, 0xF))?;
         self.send_command(Command::VcomhDeselect(VcomhLevel::Auto))?;
@@ -193,4 +211,15 @@ where
         self.i2c.write_data(self.addr, &self.buf)?;
         Ok(())
     }
+}
+
+/// Display resolution
+#[derive(Debug, Copy, Clone)]
+pub enum Resolution {
+    /// 128 x 32
+    R128x32,
+    /// 128 x 64
+    R128x64,
+    /// 96 x 16
+    R96x16,
 }

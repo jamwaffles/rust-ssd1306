@@ -12,7 +12,7 @@ use f3::hal::prelude::*;
 use f3::hal::delay::Delay;
 use f3::hal::i2c::I2c;
 use f3::hal::stm32f30x;
-use ssd1306::{Ssd1306, ADDRESS};
+use ssd1306::{Ssd1306, ADDRESS, Resolution};
 
 fn main() {
     let cp = cortex_m::Peripherals::take().unwrap();
@@ -31,7 +31,7 @@ fn main() {
         .into_push_pull_output(&mut gpiob.moder, &mut gpiob.otyper);
 
     let mut delay = Delay::new(cp.SYST, clocks);
-    let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, 128, 32);
+    let mut ssd1306 = Ssd1306::new(i2c1, ADDRESS, Resolution::R128x32, true);
 
     ssd1306.reset(&mut rst, &mut delay);
     ssd1306.init().unwrap();
