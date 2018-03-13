@@ -83,7 +83,7 @@ use prelude::Write;
 
 /// Default i2c address
 pub const ADDRESS: u8 = 0x3C;
-const BUF_SIZE: usize = 128 * 32 / 8;
+const BUF_SIZE: usize = 128 * 64 / 8;
 
 /// Ssd1306
 pub struct Ssd1306<I2C> {
