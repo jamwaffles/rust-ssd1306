@@ -23,3 +23,11 @@ cortex-m = "0.4.3"
 f3 = { version = "0.5.3", features = ["rt"] }
 cortex-m-rt = { version = "0.3.13", features = ["abort-on-panic"] }
 cortex-m-semihosting = "0.2.0"
+
+# TODO: Replace this with a "normal" dependency in the future
+# TODO: Replace with @japaric's HAL once I2C support has landed
+[dev-dependencies.stm32f103xx-hal]
+git = "https://github.com/ilya-epifanov/stm32f103xx-hal.git"
+branch = "i2c-support"
+features = ["rt"]
+version = "*"
